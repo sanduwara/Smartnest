@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartNest Control Center</title>
+  <link rel="stylesheet" href="esp32-dashboard.css">
+</head>
+<body>
+  <div class="cursor-light" id="cursorLight" aria-hidden="true"></div>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">SmartNest</p>
+        <h1>Control Center</h1>
+      </div>
+      <section class="connect-panel" aria-label="ESP32 connection">
+        <div class="theme-controls" aria-label="Theme selector">
+          <button type="button" id="lightThemeBtn" onclick="setTheme('light')">Light</button>
+          <button type="button" id="darkThemeBtn" onclick="setTheme('dark')">Dark</button>
+        </div>
+        <label for="espIpInput">ESP32 IP</label>
+        <div class="connect-row">
+          <input id="espIpInput" type="text" inputmode="decimal" placeholder="192.168.1.100">
+          <button type="button" onclick="connectToEsp()">Connect</button>
+        </div>
+        <div class="status-line">
+          <span class="live-dot" id="liveDot"></span>
+          <span id="connectionText">Offline</span>
+        </div>
+      </section>
+    </header>
+
+    <section class="status-strip">
+      <article class="metric">
+        <span>Temperature</span>
+        <strong id="temperature">--</strong>
+      </article>
+      <article class="metric">
+        <span>Humidity</span>
+        <strong id="humidity">--</strong>
+      </article>
+      <article class="metric" id="gasMetric">
+        <span>Gas</span>
+        <strong id="gasStatus">--</strong>
+        <small id="gasValue">--</small>
+      </article>
+      <article class="metric">
+        <span>Occupancy</span>
+        <strong id="peopleCount">0</strong>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="panel wide">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Bedroom 1</p>
+            <h2>Occupancy Automation</h2>
+          </div>
+          <span class="badge" id="bedroom1Mode">AUTO</span>
+        </div>
+        <div class="light-visual" id="bedroom1Glow"></div>
+        <div class="state-row">
+          <span>Light</span>
+          <strong id="bedroom1State">OFF</strong>
+        </div>
+        <p class="hint" id="bedroom1Hint">Waiting for status</p>
+        <div class="actions">
+          <button type="button" onclick="setBedroom1Mode('AUTO')">Auto</button>
+          <button type="button" onclick="setBedroom1Mode('MANUAL')">Manual</button>
+          <button type="button" onclick="setLight('bedroom1', true)">On</button>
+          <button type="button" onclick="setLight('bedroom1', false)">Off</button>
+        </div>
+      </article>
+
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Bedroom 1</p>
+            <h2>AC Unit</h2>
+          </div>
+          <span class="badge" id="bedroom1AcState">OFF</span>
+        </div>
+        <div class="ac-visual" id="bedroom1AcGlow">
+          <span></span>
+        </div>
+        <div class="state-row">
+          <span>Mode</span>
+          <strong id="bedroom1AcMode">AUTO</strong>
+        </div>
+        <p class="hint" id="bedroom1AcHint">Waiting for status</p>
+        <div class="actions three">
+          <button type="button" onclick="setBedroom1AcMode('AUTO')">Auto</button>
+          <button type="button" onclick="setBedroom1Ac(true)">On</button>
+          <button type="button" onclick="setBedroom1Ac(false)">Off</button>
+        </div>
+      </article>
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Bedroom 2</p>
+            <h2>Light</h2>
+          </div>
+          <span class="badge" id="bedroom2State">OFF</span>
+        </div>
+        <div class="light-visual" id="bedroom2Glow"></div>
+        <div class="actions two">
+          <button type="button" onclick="setLight('bedroom2', true)">On</button>
+          <button type="button" onclick="setLight('bedroom2', false)">Off</button>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Kitchen</p>
+            <h2>Light</h2>
+          </div>
+          <span class="badge" id="kitchenState">OFF</span>
+        </div>
+        <div class="light-visual" id="kitchenGlow"></div>
+        <div class="actions two">
+          <button type="button" onclick="setLight('kitchen', true)">On</button>
+          <button type="button" onclick="setLight('kitchen', false)">Off</button>
+        </div>
+      </article>
+
+      <article class="panel wide">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Living Room</p>
+            <h2>Light Group</h2>
+          </div>
+          <span class="badge" id="livingAllState">OFF</span>
+        </div>
+        <div class="dual-lights">
+          <div>
+            <div class="light-visual" id="living1Glow"></div>
+            <div class="state-row"><span>Light 1</span><strong id="living1State">OFF</strong></div>
+            <div class="actions two">
+              <button type="button" onclick="setLight('living1', true)">On</button>
+              <button type="button" onclick="setLight('living1', false)">Off</button>
+            </div>
+          </div>
+          <div>
+            <div class="light-visual" id="living2Glow"></div>
+            <div class="state-row"><span>Light 2</span><strong id="living2State">OFF</strong></div>
+            <div class="actions two">
+              <button type="button" onclick="setLight('living2', true)">On</button>
+              <button type="button" onclick="setLight('living2', false)">Off</button>
+            </div>
+          </div>
+        </div>
+        <div class="actions two">
+          <button type="button" onclick="setLivingAll(true)">All On</button>
+          <button type="button" onclick="setLivingAll(false)">All Off</button>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Smart Door</p>
+            <h2>Lock</h2>
+          </div>
+          <span class="badge" id="doorState">LOCKED</span>
+        </div>
+        <div class="door-track">
+          <span id="doorSlider"></span>
+        </div>
+        <p class="hint">NFC: <span id="nfcStatus">No Scan Yet</span></p>
+        <div class="actions two">
+          <button type="button" onclick="setDoor(true)">Lock</button>
+          <button type="button" onclick="setDoor(false)">Unlock</button>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Garage</p>
+            <h2>Door</h2>
+          </div>
+          <span class="badge" id="garageState">CLOSED</span>
+        </div>
+        <div class="garage-scene" id="garageScene">
+          <span></span>
+        </div>
+        <div class="actions three">
+          <button type="button" onclick="setGarage('open')">Open</button>
+          <button type="button" onclick="setGarage('close')">Close</button>
+          <button type="button" onclick="setGarage('toggle')">Toggle</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="esp32-dashboard.js"></script>
+</body>
+</html>
